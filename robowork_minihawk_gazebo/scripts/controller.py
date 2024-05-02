@@ -23,5 +23,21 @@ def listener():
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
 
+def set_mode(mode_name):
+    rospy.init_node('talker', anonymous=True)
+    
+    set_mode_client = rospy.ServiceProxy('/minihawk_SIM/mavros/set_mode', SetMode)
+    rate = rospy.Rate(10) # 10hz
+    
+    o = SetModeRequest()
+    o.custom_mode = mode_name
+
+    feedback = set_mode_client.call(o).mode_sent
+
+    # pub.publish(message)
+    rate.sleep()
+    print("mode set: " + str(feedback))
+
 if __name__ == '__main__':
-    listener()
+    #listener()
+    set_mode("AUTO")
